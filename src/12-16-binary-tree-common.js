@@ -61,6 +61,85 @@ function createBinarySearchTree(initKeyList) {
         return height > 0 ? height - 1 : 0;
     }
 
+    function printNodeAtLevel(node, level) {
+        if (node === null) return;
+
+        if (level === 0) {
+            console.log(node.key);
+            return;
+        }
+
+        printNodeAtLevel(node.left, level - 1);
+        printNodeAtLevel(node.right, level - 1);
+    }
+
+    function bfs() {
+        const height = getHeight();
+        for (let i = 0; i <= height; i++) {
+            printNodeAtLevel(root, i);
+        }
+    }
+
+    function printInOrder(node) {
+        if (node === null) return;
+
+        printInOrder(node.left);
+        console.log(node.key); // root
+        printInOrder(node.right);
+    }
+
+    function printPreOrder(node) {
+        if (node === null) return;
+
+        console.log(node.key); // root
+        printPreOrder(node.left);
+        printPreOrder(node.right);
+    }
+
+    function printPostOrder(node) {
+        if (node === null) return;
+
+        printPostOrder(node.left);
+        printPostOrder(node.right);
+        console.log(node.key); // root
+    }
+
+    function remove(node, key) {
+        if (node == null) return null;
+
+        // find until we get at the node to be deleted
+        if (key > node.key) {
+            node.right = remove(node.right, key);
+            return node;
+        }
+
+        if (key < node.key) {
+            node.left = remove(node.left, key);
+            return node;
+        }
+
+        // key === node.key
+        // no child
+        if (node.left === null && node.right === null) return null;
+
+        // one child
+        if (node.left === null) {
+            node = node.right;
+            return node;
+        }
+
+        if (node.right === null) {
+            node = node.left;
+            return node;
+        }
+
+        // two child
+        const minNode = findMin(node.right);
+        node.key = minNode.key;
+        node.right = remove(node.right, minNode.key);
+        return node;
+    }
+
     return {
         root,
         insert,
@@ -68,15 +147,21 @@ function createBinarySearchTree(initKeyList) {
         search,
         getHeight,
         getMaxNodesCount,
+        bfs,
+        printInOrder,
+        printPreOrder,
+        printPostOrder,
     };
 }
 
-// const binarySearchTree = createBinarySearchTree([10, 7, 15, 7]);
+// const binarySearchTree = createBinarySearchTree([10, 7, 15]);
 // console.log(binarySearchTree.root);
 
 const binarySearchTree = createBinarySearchTree([10, 7, 15, 5, 9, 20, 13, 17]);
 // console.log(binarySearchTree.root);
 // console.log(binarySearchTree.findMin(binarySearchTree.root));
 // console.log(binarySearchTree.search(binarySearchTree.root, 20));
-console.log('Nodes', binarySearchTree.getMaxNodesCount(binarySearchTree.root));
-console.log('Height', binarySearchTree.getHeight());
+// console.log('Nodes', binarySearchTree.getMaxNodesCount(binarySearchTree.root));
+// console.log('Height', binarySearchTree.getHeight());
+// binarySearchTree.bfs();
+binarySearchTree.printPreOrder(binarySearchTree.root);
